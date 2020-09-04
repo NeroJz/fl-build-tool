@@ -5,3 +5,4 @@ __pycache__/
 *.plist
 build/
 notes
+main.py
