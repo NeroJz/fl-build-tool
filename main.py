@@ -65,7 +65,7 @@ def build(path=""):
 
 
 def main():
-    project_path = "/Users/kumhoelau/Desktop/digi"
+    project_path = ""
 
     if(os.path.exists(project_path)):
         build(path=project_path)
