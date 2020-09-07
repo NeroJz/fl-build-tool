@@ -1,17 +1,16 @@
 import subprocess
-import argparse
 import os
 import io
 
 from build_android import BuildAndroid
 from build_ios import BuildIOS
 from file_utils import *
-
+from configparser import ConfigParser
 
 from datetime import datetime
 
 
-def build(path=""):
+def build(project_path="", output="", apk_platform=""):
     """Build the ios/apk based on the given path.
 
     Parameters:
@@ -23,21 +22,25 @@ def build(path=""):
 
     # 2. Clear flutter previous build
     process = subprocess.Popen(['flutter', 'clean'],
-                               cwd=path)
+                               cwd=project_path)
 
     rc = process.wait()
 
     # 3. Invoke flutter build apk
-    build_android(path=path, build_android_path=build_android_path)
+    if(output == 'apk' or output == 'all'):
+        build_android(
+            path=project_path, build_android_path=build_android_path, platform=apk_platform)
 
     # 4. Invoke flutter build ios
-    build_ios(path=path, build_ios_path=build_ios_path)
+    if(output == 'ipa' or output == 'all'):
+        build_ios(path=project_path, build_ios_path=build_ios_path)
 
 
-def build_android(path="", build_android_path=""):
+def build_android(path="", build_android_path="", platform=""):
     """ Build Android APK
     """
-    process = subprocess.Popen(['flutter', 'build', 'apk'],
+    apk_platform = '--target-platform={}'.format(platform)
+    process = subprocess.Popen(['flutter', 'build', 'apk', '--release', apk_platform],
                                cwd=path)
     rc = process.wait()
 
@@ -88,12 +91,24 @@ def build_ios(path="", build_ios_path=""):
 
 
 def main():
-    project_path = "/Users/kumhoelau/Desktop/digi"
+    # Get Build Info
+    configParser = ConfigParser()
+    configParser.read('config.ini')
 
-    if(os.path.exists(project_path)):
-        build(path=project_path)
+    buildInfo = configParser['BUILDINFO']
+
+    if not buildInfo == None:
+        project_path = buildInfo['flutter_path'] if not buildInfo['flutter_path'] is None else ''
+        output = buildInfo['output'] if not buildInfo['output'] is None else 'both'
+        apk_platform = buildInfo['apk_platform'] if not buildInfo['apk_platform'] is None else 'android-arm64'
+
+        if project_path != '' and os.path.exists(project_path):
+            build(project_path, output, apk_platform)
+        else:
+            print("Build Terminate. Could not find Flutter Project")
+
     else:
-        print("Path not existed! Program has exited!")
+        print("Build Terminate: Could not find BuildInfo")
 
 
 if __name__ == "__main__":
