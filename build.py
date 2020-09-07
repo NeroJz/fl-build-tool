@@ -3,8 +3,7 @@ import platform
 
 from shutil import copyfile
 from datetime import datetime
-
-TEMP_MAX_TIME = 3600
+from configparser import ConfigParser
 
 
 class Build:
@@ -12,17 +11,22 @@ class Build:
         super().__init__()
         self.src = src
         self.out = out
+        self.filename = filename
+        self.cfg = ConfigParser()
+        self.cfg.read("config.ini")
 
     def move_file(self):
-        self.destination = copyfile(self.src, self.out)
+        dest = os.path.join(self.out, self.filename)
+        self.destination = copyfile(self.src, dest)
 
     def is_source_file_exist(self):
-        return os.path.isfile(self.src)
+        return os.path.exists(self.src)
 
     def is_out_file_exist(self):
         return os.path.isfile(self.out)
 
     def is_new_build(self):
+        globalinfo = self.cfg['GLOBALINFO']
         if self.is_source_file_exist():
             dt_file = datetime.fromtimestamp(self.get_creation_date())
             dt_now = datetime.now()
@@ -32,7 +36,7 @@ class Build:
 
             print("Min: {}".format(min))
 
-            return min < TEMP_MAX_TIME
+            return min < globalinfo['temp_max_time']
 
         return False
 
