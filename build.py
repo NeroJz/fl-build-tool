@@ -36,7 +36,7 @@ class Build:
 
             print("Min: {}".format(min))
 
-            return min < globalinfo['temp_max_time']
+            return min < int(globalinfo['temp_max_time'])
 
         return False
 
