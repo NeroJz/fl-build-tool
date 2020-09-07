@@ -113,12 +113,7 @@ class BuildIOS(Build):
         process = subprocess.Popen(cmd_arr)
         rc = process.wait()
 
-        if self.is_new_ipa_created():
-            print("New IPA generated! You can find the IPA at: {}".format(dest))
-        else:
-            print("Failed to generate new IPA!")
-
-    def is_new_ipa_created(self):
+    def is_ipa_existed(self):
         globalinfo = self.cfg['GLOBALINFO']
 
         dest = os.path.join(self.out, self.filename)
