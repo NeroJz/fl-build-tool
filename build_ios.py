@@ -33,12 +33,9 @@ class BuildIOS(Build):
         # Step 1
         archiveinfo = self.cfg['ARCHIVEINFO']
 
-        xworkspace_path = os.path.join(
-            self.cwd, 'ios', archiveinfo['workspace'])
-
         # Step 2
         cmd_arr = ['xcodebuild',
-                   '-workspace', xworkspace_path,
+                   '-workspace', archiveinfo['workspace'],
                    '-scheme', archiveinfo['scheme'],
                    '-sdk', archiveinfo['sdk'],
                    '-configuration', archiveinfo['configuration'],
@@ -117,7 +114,7 @@ class BuildIOS(Build):
         rc = process.wait()
 
         if self.is_new_ipa_created():
-            print("New IPA generated!")
+            print("New IPA generated! You can find the IPA at: {}".format(dest))
         else:
             print("Failed to generate new IPA!")
 
