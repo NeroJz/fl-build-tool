@@ -14,8 +14,7 @@ def create_build_folder():
 
     # Remove existing build folder
     if os.path.exists(build_dir):
-        # rmtree(build_dir)
-        pass
+        rmtree(build_dir)
 
     ios_path = os.path.join(build_dir, 'ios')
     android_path = os.path.join(build_dir, 'android')
