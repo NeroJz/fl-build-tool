@@ -1,6 +1,8 @@
 import os
 import platform
-from shutil import copyfile
+from shutil import copyfile, rmtree
+
+import subprocess
 
 
 def create_build_folder():
@@ -10,6 +12,10 @@ def create_build_folder():
     current_dir = os.getcwd()
     build_dir = os.path.join(current_dir, 'build')
 
+    if os.path.exists(build_dir):
+        # rmtree(build_dir)
+        pass
+
     ios_path = os.path.join(build_dir, 'ios')
     android_path = os.path.join(build_dir, 'android')
 
@@ -17,16 +23,6 @@ def create_build_folder():
         os.makedirs(build_dir)
         os.makedirs(ios_path)
         os.makedirs(android_path)
-    else:
-        if not os.path.exists(ios_path):
-            os.makedirs(ios_path)
-        else:
-            clear_file_content(ios_path)
-
-        if not os.path.exists(android_path):
-            os.makedirs(android_path)
-        else:
-            clear_file_content(android_path)
 
     return ios_path, android_path
 
