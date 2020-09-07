@@ -17,6 +17,7 @@ class Build:
 
     def move_file(self):
         dest = os.path.join(self.out, self.filename)
+        print(dest)
         self.destination = copyfile(self.src, dest)
 
     def is_source_file_exist(self):
